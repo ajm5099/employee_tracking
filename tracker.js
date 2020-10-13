@@ -25,6 +25,32 @@ connection.connect(function (err) {
 });
 
 //TODO: Build switch statement that allows for initilization questions
+const askQuestions = () => {
+    inquirer.prompt([
+        {
+            name: "mainMenuChoice",
+            type: "list",
+            message: "What would you like to do?",
+            choices: [
+                "View all departments",
+                "Quit"
+            ]
+        }
+        .then(({ mainMenuChoice }) => {
+            switch (mainMenuChoice) {
+                case "View all departments":
+                    viewAllDepartments()
+                    break;
+                case "Quit":
+                    connection.end()
+                    break;
+                default:
+                    console.log("something went wrong")
+                    break;
+            }
+        })
+    ])
+}
 
 //TODO: Allow users to view departments
 
