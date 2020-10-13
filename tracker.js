@@ -35,6 +35,7 @@ const askQuestions = (data) => {
                 "Add a new department",
                 "Add a new role",
                 "Add a new employee",
+                "Update an employees role",
                 "Quit"
             ]
         }
@@ -57,6 +58,9 @@ const askQuestions = (data) => {
                 break;
             case "Add a new employee":
                 addNewEmployee()
+                break;
+            case "Update an employees role":
+                updateEmployeeRole()
                 break;
             case "Quit":
                 connection.end()
@@ -97,7 +101,7 @@ const viewAllDepartments = () => {
 //     })
 // }
 
-//Allow users to view all employees with same roles
+//Allow users to view all employees
 const viewAllRoles = () => {
     connection.query("SELECT * FROM employeedb.roles", function (err, data) {
         if (err) {
@@ -169,7 +173,7 @@ function addNewDepartment() {
     })
 }
 
-//TODO: Allow user to add employees
+// Allow user to add employees
 function addNewEmployee() {
     inquirer.prompt([
         {
@@ -206,6 +210,25 @@ function addNewEmployee() {
 }
 
 //TODO: Allow user to update employee roles
+
+const updateEmployeeRole = () => {
+    connection.query("SELECT * FROM employeedb.employee", function (err, data) {
+        if (err) throw err
+        inquirer.prompt([{
+            type: "list",
+            name: "employeeSelect",
+            message: "Which employee name do you wish to update?",
+            choices: function () {
+                const choicesArray = []
+                for (let i = 0; i < data.length; i++) {
+                    choicesArray.push(data[i].first_name)
+                }
+                return choicesArray
+            }
+        }])
+        // askQuestions(data);
+    })
+}
 
 
 //TODO: ==STRETCH== Allow user to update employee managers
