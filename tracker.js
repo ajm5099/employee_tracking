@@ -31,6 +31,8 @@ const askQuestions = (data) => {
             choices: [
                 "View all departments",
                 "View all employees",
+                "View all roles",
+                "Add a new department",
                 "Quit"
             ]
         }
@@ -39,8 +41,14 @@ const askQuestions = (data) => {
             case "View all departments":
                 viewAllDepartments()
                 break;
-                case "View all employees":
+            case "View all employees":
                 viewAllEmployees()
+                break;
+            case "View all roles":
+                viewAllRoles()
+                break;
+            case "Add a new department":
+                addNewDepartment()
                 break;
             case "Quit":
                 connection.end()
@@ -52,7 +60,7 @@ const askQuestions = (data) => {
     })
 }
 
-//TODO: Allow users to view departments
+//Allow users to view departments
 const viewAllDepartments = () => {
     connection.query("SELECT * FROM employeedb.department", function (err, data) {
         if (err) {
@@ -62,9 +70,17 @@ const viewAllDepartments = () => {
     })
 }
 
-//TODO: Allow users to view roles
+//Allow users to view roles
+const viewAllRoles = () => {
+    connection.query("SELECT * FROM employeedb.roles", function (err, data) {
+        if (err) {
+            throw err
+        }
+        askQuestions(data);
+    })
+}
 
-//TODO: Allow user to view employees
+//Allow user to view employees
 const viewAllEmployees = () => {
     connection.query("SELECT employee.first_name, employee.last_name, employee.role_id, employee.manager_id, roles.title, roles.salary, department.name FROM employee INNER JOIN roles ON employee.role_id = roles.id INNER JOIN department ON roles.department_id = department.id", function (err, data) {
         if (err) {
@@ -74,21 +90,23 @@ const viewAllEmployees = () => {
     })
 }
 
-//TODO: Allow user to add departments
-const addNewDepartment = () => {
+//Allow user to add departments
+function addNewDepartment() {
     inquirer.prompt([
         {
             name: "newDepartmentChoice",
             type: "input",
             message: "What would you like to call the new department?",
         }
-    ]).then(answers => {
-        connection.query("INSERT INTO department (name) VALUES (answers.newDepartmentChoice)"), function (err, data) {
+    ]).then (function(response) {
+        connection.query("INSERT INTO department SET ?", {
+            name:response.newDepartmentChoice
+        }, function (err, data) {
             if (err) {
                 throw err
             }
             askQuestions(data);
-        }
+        })
     })
 }
 
