@@ -33,6 +33,8 @@ const askQuestions = (data) => {
                 "View all employees",
                 "View all roles",
                 "Add a new department",
+                "Add a new role",
+                "Add a new employee",
                 "Quit"
             ]
         }
@@ -49,6 +51,12 @@ const askQuestions = (data) => {
                 break;
             case "Add a new department":
                 addNewDepartment()
+                break;
+            case "Add a new role":
+                addNewDepartment()
+                break;
+            case "Add a new employee":
+                addNewEmployee()
                 break;
             case "Quit":
                 connection.end()
@@ -111,11 +119,75 @@ function addNewDepartment() {
 }
 
 
-//TODO: Allow user to add roles
+//Allow user to add roles
+function addNewDepartment() {
+    inquirer.prompt([
+        {
+            name: "newRoleTitle",
+            type: "input",
+            message: "What would you like to call the new role?",
+        }, {
+            name: "newRoleSalary",
+            type: "input",
+            message: "What is the salary for this role?",
+        }, {
+            name: "newRoleDepartment",
+            type: "input",
+            message: "What is the department for this role?",
+        },
+
+    ]).then (function(response) {
+        connection.query("INSERT INTO roles SET ?", {
+            title:response.newRoleTitle,
+            salary:response.newRoleSalary,
+            department_id:response.newRoleDepartment
+        }, function (err, data) {
+            if (err) {
+                throw err
+            }
+            askQuestions(data);
+        })
+    })
+}
 
 //TODO: Allow user to add employees
+function addNewEmployee() {
+    inquirer.prompt([
+        {
+            name: "newEmployeeFirstName",
+            type: "input",
+            message: "What is the employees first name?",
+        }, {
+            name: "newEmployeeLastName",
+            type: "input",
+            message: "What is the employees last name?",
+        }, {
+            name: "newEmployeeID",
+            type: "input",
+            message: "What is the employees role ID?",
+        }, {
+            name: "newEmployeeManager",
+            type: "input",
+            message: "What is the employees manager ID?",
+        },
+
+    ]).then (function(response) {
+        connection.query("INSERT INTO employee SET ?", {
+            first_name:response.newEmployeeFirstName,
+            last_name:response.newEmployeeLastName,
+            role_id:response.newEmployeeID,
+            manager_id: response.newEmployeeManager
+        }, function (err, data) {
+            if (err) {
+                throw err
+            }
+            askQuestions(data);
+        })
+    })
+}
 
 //TODO: Allow user to update employee roles
+
 
 //TODO: ==STRETCH== Allow user to update employee managers
 
