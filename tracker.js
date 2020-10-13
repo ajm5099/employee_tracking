@@ -53,6 +53,15 @@ const askQuestions = () => {
 }
 
 //TODO: Allow users to view departments
+const viewAllDepartments = () => {
+    connection.query("SELECT * FROM employeedb.department", function (err, data) {
+        if (err) {
+            throw err
+        }
+        console.table(data);
+        askQuestions();
+    })
+}
 
 //TODO: Allow users to view roles
 
