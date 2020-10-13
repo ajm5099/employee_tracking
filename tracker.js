@@ -68,7 +68,7 @@ const askQuestions = (data) => {
     })
 }
 
-//Allow users to view departments
+//TODO:Allow users to view all employees in departments
 const viewAllDepartments = () => {
     connection.query("SELECT * FROM employeedb.department", function (err, data) {
         if (err) {
@@ -78,7 +78,26 @@ const viewAllDepartments = () => {
     })
 }
 
-//Allow users to view roles
+// const viewAllDepartments = () => {
+//     connection.query("SELECT * FROM employeedb.department", function (err, data) {
+//         if (err) throw err
+//         inquirer.prompt([{
+//             type: "list",
+//             name: "departmentSelect",
+//             message: "Please select a department",
+//             choices: function () {
+//                 const choicesArray = []
+//                 for (let i = 0; i < data.length; i++) {
+//                     choicesArray.push(data[i].name)
+//                 }
+//                 return choicesArray
+//             }
+//         }])
+//         askQuestions(data);
+//     })
+// }
+
+//Allow users to view all employees with same roles
 const viewAllRoles = () => {
     connection.query("SELECT * FROM employeedb.roles", function (err, data) {
         if (err) {
