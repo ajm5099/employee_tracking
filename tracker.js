@@ -82,28 +82,9 @@ const viewAllDepartments = () => {
     })
 }
 
-// const viewAllDepartments = () => {
-//     connection.query("SELECT * FROM employeedb.department", function (err, data) {
-//         if (err) throw err
-//         inquirer.prompt([{
-//             type: "list",
-//             name: "departmentSelect",
-//             message: "Please select a department",
-//             choices: function () {
-//                 const choicesArray = []
-//                 for (let i = 0; i < data.length; i++) {
-//                     choicesArray.push(data[i].name)
-//                 }
-//                 return choicesArray
-//             }
-//         }])
-//         askQuestions(data);
-//     })
-// }
-
 //Allow users to view all employees
 const viewAllRoles = () => {
-    connection.query("SELECT * FROM employeedb.roles", function (err, data) {
+    connection.query("SELECT * FROM employeedb.role", function (err, data) {
         if (err) {
             throw err
         }
@@ -113,7 +94,7 @@ const viewAllRoles = () => {
 
 //Allow user to view employees
 const viewAllEmployees = () => {
-    connection.query("SELECT employee.first_name, employee.last_name, employee.role_id, employee.manager_id, roles.title, roles.salary, department.name FROM employee INNER JOIN roles ON employee.role_id = roles.id INNER JOIN department ON roles.department_id = department.id", function (err, data) {
+    connection.query("SELECT employee.first_name, employee.last_name, employee.role_id, employee.manager_id, role.title, role.salary, department.name FROM employee INNER JOIN role ON employee.role_id = role.id INNER JOIN department ON role.department_id = department.id", function (err, data) {
         if (err) {
             throw err
         }
@@ -160,7 +141,7 @@ function addNewRole() {
         },
 
     ]).then (function(response) {
-        connection.query("INSERT INTO roles SET ?", {
+        connection.query("INSERT INTO role SET ?", {
             title:response.newRoleTitle,
             salary:response.newRoleSalary,
             department_id:response.newRoleDepartment
@@ -209,7 +190,7 @@ function addNewEmployee() {
     })
 }
 
-//TODO: Allow user to update employee roles
+// Allow user to update employee roles
 
 const updateEmployeeRole = () => {
     connection.query("SELECT * FROM employeedb.employee", function (err, data) {
@@ -222,7 +203,10 @@ const updateEmployeeRole = () => {
             choices: function () {
                 const choicesArray = []
                 for (let i = 0; i < data.length; i++) {
-                    choicesArray.push(data[i].first_name)
+                    choicesArray.push({
+                        name: data[i].first_name + " " + data[i].last_name,
+                        value:data[i].id
+                    })
                 }
                 return choicesArray
             }
@@ -231,23 +215,23 @@ const updateEmployeeRole = () => {
             name: "newRole",
             message: "What is the employees new role?",
             choices: function () {
-                const choicesArray = []
+                const roleChoicesArray = []
                 for (let i = 0; i < data.length; i++) {
-                    choicesArray.push(data[i].role_id)
+                    roleChoicesArray.push(data[i].role_id)
                 }
-                return choicesArray
+                return roleChoicesArray
             }
         }
     ]).then(({ employeeSelect, newRole}) => {
-        // const [foundEmployee] = data.filter(employee => employee.firstname === first_name)
-        connection.query("INSERT INTO employee SET ?", {
-            role_id: newRole
-        }, (err, data) => {
+        connection.query("UPDATE employee SET ? WHERE  ?", [{
+            role_id: newRole,
+        }, {
+            id: employeeSelect
+        }], (err, data) => {
             if (err) throw err
-            console.log("user role changed")
         })
-    }) 
-        // askQuestions(data);
+        askQuestions(data);
+    })   
     })
 }
 
