@@ -54,7 +54,7 @@ const askQuestions = (data) => {
                 addNewDepartment()
                 break;
             case "Add a new role":
-                addNewDepartment()
+                addNewRole()
                 break;
             case "Add a new employee":
                 addNewEmployee()
@@ -143,7 +143,7 @@ function addNewDepartment() {
 
 
 //Allow user to add roles
-function addNewDepartment() {
+function addNewRole() {
     inquirer.prompt([
         {
             name: "newRoleTitle",
@@ -214,7 +214,8 @@ function addNewEmployee() {
 const updateEmployeeRole = () => {
     connection.query("SELECT * FROM employeedb.employee", function (err, data) {
         if (err) throw err
-        inquirer.prompt([{
+        inquirer.prompt([
+            {
             type: "list",
             name: "employeeSelect",
             message: "Which employee name do you wish to update?",
@@ -225,7 +226,27 @@ const updateEmployeeRole = () => {
                 }
                 return choicesArray
             }
-        }])
+        }, {
+            type: "list",
+            name: "newRole",
+            message: "What is the employees new role?",
+            choices: function () {
+                const choicesArray = []
+                for (let i = 0; i < data.length; i++) {
+                    choicesArray.push(data[i].role_id)
+                }
+                return choicesArray
+            }
+        }
+    ]).then(({ employeeSelect, newRole}) => {
+        // const [foundEmployee] = data.filter(employee => employee.firstname === first_name)
+        connection.query("INSERT INTO employee SET ?", {
+            role_id: newRole
+        }, (err, data) => {
+            if (err) throw err
+            console.log("user role changed")
+        })
+    }) 
         // askQuestions(data);
     })
 }
