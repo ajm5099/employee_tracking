@@ -20,7 +20,7 @@ connection.connect(function (err) {
     askQuestions();
 });
 
-//TODO: Build switch statement that allows for initilization questions
+// Build switch statement that allows for initilization questions
 const askQuestions = (data) => {
     console.table(data);
     inquirer.prompt([
@@ -72,7 +72,7 @@ const askQuestions = (data) => {
     })
 }
 
-//TODO:Allow users to view all employees in departments
+//Allow users to view all employees in departments
 const viewAllDepartments = () => {
     connection.query("SELECT * FROM employeedb.department", function (err, data) {
         if (err) {
@@ -121,7 +121,6 @@ function addNewDepartment() {
         })
     })
 }
-
 
 //Allow user to add roles
 function addNewRole() {
@@ -191,7 +190,6 @@ function addNewEmployee() {
 }
 
 // Allow user to update employee roles
-
 const updateEmployeeRole = () => {
     connection.query("SELECT * FROM employeedb.employee", function (err, data) {
         if (err) throw err
